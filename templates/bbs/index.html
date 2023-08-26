@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>簡易掲示板</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body>
+
+    <main class="container">
+        {# ここが投稿用フォーム #}
+        <form method="POST">
+            {% csrf_token %}
+            <textarea class="form-control" name="comment"></textarea>
+            <input type="submit" value="送信">
+        </form>
+
+        {# ここが投稿されたデータの表示領域 #}
+        {% for topic in topics %}
+        <div class="border">
+            {{ topic.comment }}
+        </div>
+        {% endfor %}
+
+        <button id="checkout-button" type="button">決済</button>
+
+    </main>
+
+
+<!-- Stripeクラスを使うため、CDNをインストールしておく。 -->
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+
+    //ここにStripeの公開鍵をセットする。
+    var stripe = Stripe( "{{ public_key }}" );
+
+    //決済ボタン押したときのイベント(Stripeへ決済処理する)をセットする。
+    var checkoutButton = document.getElementById('checkout-button');
+
+    checkoutButton.addEventListener('click', function() {
+        stripe.redirectToCheckout({
+          sessionId: '{{ session_id }}'
+        }).then(function (result) {
+            //失敗したときの処理
+        });
+    });
+
+    console.log("{{ session_id }}");
+
+</script>
+
+
+</body>
+</html>
