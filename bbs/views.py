@@ -98,11 +98,9 @@ class CheckoutView(View):
         # XXX: 2回目以降の連続決済の場合、↑のsession.customerがnullになるため、この方法では決済の確認ができない
         # session.payment_status で確認をする
 
-
         print( session.payment_status )
         if session.payment_status != "paid":
             return redirect('shop:session', order.id)        
-
 
         #この時点で、セッションが存在しており、なおかつ決済している状態であることがわかる。
         #TODO:実践ではここで『カート内の商品を削除する』『顧客へ注文承りましたという趣旨のメールを送信する』『注文が入った旨を関係者にメールで報告する』等の処理を書く。
